@@ -40,7 +40,17 @@
       padding: 20px;
     }
 
-    .welcome {
+    .page {
+      display: none;
+    }
+
+    .page.active {
+      display: block;
+    }
+
+    .welcome,
+    .lesson-card,
+    .lesson-reader {
       background: white;
       border-radius: 16px;
       padding: 25px;
@@ -83,6 +93,25 @@
       background: #1d4ed8;
     }
 
+    .back-button {
+      background: #64748b;
+      margin-bottom: 20px;
+    }
+
+    .back-button:hover {
+      background: #475569;
+    }
+
+    .lesson-card h3 {
+      margin-top: 0;
+    }
+
+    .lesson-content {
+      line-height: 1.9;
+      white-space: pre-line;
+      font-size: 17px;
+    }
+
     footer {
       text-align: center;
       color: #6b7280;
@@ -100,38 +129,81 @@
 
   <main>
 
-    <section class="welcome">
-      <h2>សូមស្វាគមន៍មកកាន់ Study with AI 👋</h2>
-      <p>
-        កម្មវិធីសម្រាប់ជួយអ្នករៀនមេរៀន
-        សួរសំណួរជាមួយ AI និងធ្វើ Quiz ដើម្បីពិនិត្យចំណេះដឹង។
-      </p>
+    <!-- Home -->
+    <section id="home-page" class="page active">
 
-      <button onclick="startLearning()">
-        ចាប់ផ្តើមរៀន
-      </button>
+      <div class="welcome">
+        <h2>សូមស្វាគមន៍មកកាន់ Study with AI 👋</h2>
+
+        <p>
+          កម្មវិធីសម្រាប់ជួយអ្នករៀនមេរៀន
+          សួរសំណួរជាមួយ AI និងធ្វើ Quiz ដើម្បីពិនិត្យចំណេះដឹង។
+        </p>
+
+        <button onclick="showLessons()">
+          📚 ចាប់ផ្តើមរៀន
+        </button>
+      </div>
+
+      <section class="features">
+
+        <div class="card">
+          <h2>📚 មេរៀន</h2>
+          <p>អាន និងសិក្សាមេរៀនរបស់អ្នក។</p>
+        </div>
+
+        <div class="card">
+          <h2>🤖 AI Q&A</h2>
+          <p>សួរសំណួរ និងទទួលជំនួយពី AI។</p>
+        </div>
+
+        <div class="card">
+          <h2>📝 Quiz</h2>
+          <p>ធ្វើសំណួរដើម្បីពិនិត្យការយល់ដឹង។</p>
+        </div>
+
+        <div class="card">
+          <h2>📊 Progress</h2>
+          <p>តាមដានវឌ្ឍនភាពនៃការរៀនរបស់អ្នក។</p>
+        </div>
+
+      </section>
+
     </section>
 
-    <section class="features">
 
-      <div class="card">
-        <h2>📚 មេរៀន</h2>
-        <p>អាន និងសិក្សាមេរៀនរបស់អ្នក។</p>
+    <!-- Lessons -->
+    <section id="lessons-page" class="page">
+
+      <div class="welcome">
+        <button class="back-button" onclick="showHome()">
+          ← ត្រឡប់
+        </button>
+
+        <h2>📚 បញ្ជីមេរៀន</h2>
+        <p>ជ្រើសរើសមេរៀនដែលអ្នកចង់រៀន។</p>
       </div>
 
-      <div class="card">
-        <h2>🤖 AI Q&A</h2>
-        <p>សួរសំណួរ និងទទួលជំនួយពី AI។</p>
-      </div>
+      <div id="lessons-list"></div>
 
-      <div class="card">
-        <h2>📝 Quiz</h2>
-        <p>ធ្វើសំណួរដើម្បីពិនិត្យការយល់ដឹង។</p>
-      </div>
+    </section>
 
-      <div class="card">
-        <h2>📊 Progress</h2>
-        <p>តាមដានវឌ្ឍនភាពនៃការរៀនរបស់អ្នក។</p>
+
+    <!-- Lesson Reader -->
+    <section id="reader-page" class="page">
+
+      <div class="lesson-reader">
+
+        <button class="back-button" onclick="showLessons()">
+          ← ត្រឡប់ទៅមេរៀន
+        </button>
+
+        <h2 id="reader-title"></h2>
+
+        <hr>
+
+        <div id="reader-content" class="lesson-content"></div>
+
       </div>
 
     </section>
@@ -142,10 +214,205 @@
     © 2026 Study with AI
   </footer>
 
+
   <script>
-    function startLearning() {
-      alert("ស្វាគមន៍! មុខងាររៀននឹងត្រូវបានបន្ថែមជាជំហានបន្ទាប់។");
+
+    // ------------------------------
+    // Lessons
+    // ------------------------------
+
+    const lessons = [
+
+      {
+        title: "មេរៀនទី១៖ ការណែនាំអំពី AI",
+
+        description:
+          "ស្វែងយល់អំពី Artificial Intelligence និងការប្រើប្រាស់ AI។",
+
+        content:
+`Artificial Intelligence (AI) គឺជាបច្ចេកវិទ្យាដែលអាចឱ្យកុំព្យូទ័រ
+អនុវត្តការងារមួយចំនួនដែលជាទូទៅត្រូវការសមត្ថភាពរបស់មនុស្ស។
+
+ឧទាហរណ៍៖
+
+• ការឆ្លើយសំណួរ
+• ការស្គាល់រូបភាព
+• ការបកប្រែភាសា
+• ការសរសេរអត្ថបទ
+• ការវិភាគទិន្នន័យ
+
+AI អាចជួយសិស្សក្នុងការរៀន ដោយអាចពន្យល់មេរៀន
+ឆ្លើយសំណួរ និងជួយបង្កើតសំណួរសម្រាប់អនុវត្ត។
+
+ប៉ុន្តែ សិស្សគួរតែប្រើ AI ជាឧបករណ៍ជំនួយ
+ហើយគួរតែព្យាយាមយល់មេរៀនដោយខ្លួនឯង។`
+      },
+
+
+      {
+        title: "មេរៀនទី២៖ របៀបរៀនជាមួយ AI",
+
+        description:
+          "រៀនពីរបៀបប្រើ AI ដើម្បីជួយដល់ការសិក្សា។",
+
+        content:
+`ការប្រើ AI សម្រាប់ការរៀន អាចចាប់ផ្តើមពីការសួរសំណួរដែលច្បាស់លាស់។
+
+ឧទាហរណ៍៖
+
+"សូមពន្យល់អំពី Photosynthesis ជាភាសាខ្មែរ
+សម្រាប់សិស្សថ្នាក់ទី៩។"
+
+នៅពេលសួរ AI គួរបញ្ជាក់៖
+
+• តើចង់ដឹងអំពីអ្វី?
+• ចង់បានការពន្យល់កម្រិតណា?
+• ចង់បានជាភាសាអ្វី?
+• តើចង់បានឧទាហរណ៍ ឬសំណួរអនុវត្តដែរឬទេ?
+
+ការសួរឱ្យច្បាស់ អាចជួយឱ្យទទួលបានចម្លើយ
+ដែលមានប្រយោជន៍សម្រាប់ការរៀន។`
+      },
+
+
+      {
+        title: "មេរៀនទី៣៖ ការរៀនដោយការអនុវត្ត",
+
+        description:
+          "ស្វែងយល់ពីសារៈសំខាន់នៃការអនុវត្តបន្ទាប់ពីរៀន។",
+
+        content:
+`ការអានមេរៀនតែមួយមុខ មិនតែងតែគ្រប់គ្រាន់សម្រាប់ការយល់ដឹងទេ។
+
+បន្ទាប់ពីរៀន គួរអនុវត្តតាមរយៈ៖
+
+• សំណួរ និងចម្លើយ
+• Quiz
+• លំហាត់
+• ការពន្យល់មេរៀនឡើងវិញដោយខ្លួនឯង
+
+Study with AI នឹងជួយភ្ជាប់ការរៀន
+ជាមួយការអនុវត្ត ដើម្បីឱ្យសិស្សអាចតាមដាន
+ការរីកចម្រើនរបស់ខ្លួនបាន។`
+      }
+
+    ];
+
+
+    // ------------------------------
+    // Show Home
+    // ------------------------------
+
+    function showHome() {
+
+      document.getElementById("home-page")
+        .classList.add("active");
+
+      document.getElementById("lessons-page")
+        .classList.remove("active");
+
+      document.getElementById("reader-page")
+        .classList.remove("active");
+
     }
+
+
+    // ------------------------------
+    // Show Lessons
+    // ------------------------------
+
+    function showLessons() {
+
+      document.getElementById("home-page")
+        .classList.remove("active");
+
+      document.getElementById("reader-page")
+        .classList.remove("active");
+
+      document.getElementById("lessons-page")
+        .classList.add("active");
+
+      displayLessons();
+
+    }
+
+
+    // ------------------------------
+    // Display Lessons
+    // ------------------------------
+
+    function displayLessons() {
+
+      const list =
+        document.getElementById("lessons-list");
+
+      list.innerHTML = "";
+
+      lessons.forEach(function(lesson, index) {
+
+        const card =
+          document.createElement("div");
+
+        card.className = "lesson-card";
+
+        card.innerHTML = `
+          <h3>${lesson.title}</h3>
+
+          <p>${lesson.description}</p>
+
+          <button onclick="openLesson(${index})">
+            📖 អានមេរៀន
+          </button>
+        `;
+
+        list.appendChild(card);
+
+      });
+
+    }
+
+
+    // ------------------------------
+    // Open Lesson
+    // ------------------------------
+
+    function openLesson(index) {
+
+      const lesson = lessons[index];
+
+      if (!lesson) {
+        return;
+      }
+
+      document.getElementById("lessons-page")
+        .classList.remove("active");
+
+      document.getElementById("home-page")
+        .classList.remove("active");
+
+      document.getElementById("reader-page")
+        .classList.add("active");
+
+      document.getElementById("reader-title")
+        .innerText = lesson.title;
+
+      document.getElementById("reader-content")
+        .innerText = lesson.content;
+
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+      });
+
+    }
+
+
+    // ------------------------------
+    // Start
+    // ------------------------------
+
+    displayLessons();
+
   </script>
 
 </body>
