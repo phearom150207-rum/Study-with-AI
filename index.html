@@ -473,25 +473,81 @@
     }
 
 
-    function askAI() {
+    async function askAI() {
 
-      const question =
-        document.getElementById("question").value.trim();
+  const question =
+    document.getElementById("question").value.trim();
 
-      const lessonIndex =
-        document.getElementById("lesson-select").value;
+  const lessonIndex =
+    document.getElementById("lesson-select").value;
 
-      const answer =
-        document.getElementById("answer");
+  const answer =
+    document.getElementById("answer");
 
+  if (!question) {
+    answer.innerHTML =
+      "⚠️ សូមសរសេរសំណួររបស់អ្នកជាមុនសិន។";
+    return;
+  }
 
-      if (!question) {
+  const lesson =
+    lessons[lessonIndex];
 
-        answer.innerHTML =
-          "⚠️ សូមសរសេរសំណួររបស់អ្នកជាមុនសិន។";
+  answer.innerHTML =
+    "🤖 AI កំពុងគិត... សូមរង់ចាំបន្តិច។";
 
-        return;
+  try {
 
+    const response = await fetch(
+      "https://study-with-ai-api.phearom150207.workers.dev",
+      {
+        method: "POST",
+
+        headers: {
+          "Content-Type": "application/json"
+        },
+
+        body: JSON.stringify({
+          question: question,
+          lesson: lesson.content || lesson.description || lesson.title
+        })
+      }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok || !data.success) {
+      throw new Error(
+        data.error || "AI API Error"
+      );
+    }
+
+    answer.innerHTML = `
+      <strong>🤖 AI Q&A</strong>
+
+      <p>
+        <strong>សំណួរ៖</strong><br>
+        ${question}
+      </p>
+
+      <hr>
+
+      <p>
+        <strong>💡 ចម្លើយ៖</strong><br>
+        ${data.answer}
+      </p>
+    `;
+
+  } catch (error) {
+
+    answer.innerHTML = `
+      ⚠️ មិនអាចភ្ជាប់ទៅ AI បានទេ។<br>
+      សូមពិនិត្យ Internet និងសាកល្បងម្ដងទៀត។
+    `;
+
+    console.error(error);
+  }
+}
       }
 
 
